@@ -1,5 +1,5 @@
 {
-    "object_alias": "exface.Core.CONNECTION",
+    "object_alias": "exface.Core.DATASRC",
     "columns": [
         {
             "name": "CREATED_ON",
@@ -26,63 +26,61 @@
             "attribute_alias": "APP"
         },
         {
+            "name": "DEFAULT_CONNECTION",
+            "attribute_alias": "DEFAULT_CONNECTION"
+        },
+        {
+            "name": "DEFAULT_QUERY_BUILDER",
+            "attribute_alias": "DEFAULT_QUERY_BUILDER"
+        },
+        {
+            "name": "READABLE_FLAG",
+            "attribute_alias": "READABLE_FLAG"
+        },
+        {
+            "name": "WRITABLE_FLAG",
+            "attribute_alias": "WRITABLE_FLAG"
+        },
+        {
+            "name": "BASE_OBJECT",
+            "attribute_alias": "BASE_OBJECT"
+        },
+        {
             "name": "LABEL",
             "attribute_alias": "LABEL"
         },
         {
-            "name": "CONNECTOR",
-            "attribute_alias": "CONNECTOR"
-        },
-        {
-            "name": "CONFIG",
-            "attribute_alias": "CONFIG"
-        },
-        {
-            "name": "READONLY",
-            "attribute_alias": "READONLY"
-        },
-        {
             "name": "ALIAS",
             "attribute_alias": "ALIAS"
-        },
-        {
-            "name": "FILTER_CONTEXT",
-            "attribute_alias": "FILTER_CONTEXT"
         }
     ],
     "rows": [
         {
-            "CREATED_ON": "2021-01-19 09:38:56",
-            "MODIFIED_ON": "2021-01-19 10:42:34",
+            "CREATED_ON": "2021-01-19 09:39:47",
+            "MODIFIED_ON": "2021-01-19 13:21:00",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
-            "UID": "0x11ebb192c51736d8b192847beb4a5184",
+            "UID": "0x11eb9520e32ff1789520847beb4a5184",
             "APP": "0x11eba99a86268014a99a847beb4a5184",
-            "LABEL": "Google OpenID v.1",
-            "CONNECTOR": "exface\/UrlDataConnector\/DataConnectors\/HttpConnector.php",
-            "CONFIG": {
-                "url": "https:\/\/openidconnect.googleapis.com\/v1\/",
-                "authentication": {
-                    "class": "\\axenox\\GoogleConnector\\DataConnectors\\Authentication\\GoogleOAuth2",
-                    "client_id": "914683922990-m5mani2914rcodslb7spoob1b8k4ktko.apps.googleusercontent.com",
-                    "client_secret": "-piYBNdIBYQnQIcAN_CniNml"
-                }
-            },
-            "READONLY": "1",
-            "ALIAS": "GOOGLE_OPENID_V1",
-            "FILTER_CONTEXT": null
+            "DEFAULT_CONNECTION": "0x11ebb192c51736d8b192847beb4a5184",
+            "DEFAULT_QUERY_BUILDER": "exface\/UrlDataConnector\/QueryBuilders\/JsonUrlBuilder.php",
+            "READABLE_FLAG": "1",
+            "WRITABLE_FLAG": "0",
+            "BASE_OBJECT": "",
+            "LABEL": "Google OpenID",
+            "ALIAS": "GOOGLE_OPENID"
         }
     ],
     "totals_rows": [],
     "filters": {
         "operator": "AND",
-        "base_object_alias": "exface.Core.CONNECTION",
+        "base_object_alias": "exface.Core.DATASRC",
         "conditions": [
             {
                 "expression": "APP",
                 "comparator": "=",
                 "value": "0x11eba99a86268014a99a847beb4a5184",
-                "object_alias": "exface.Core.CONNECTION"
+                "object_alias": "exface.Core.DATASRC"
             }
         ]
     },
