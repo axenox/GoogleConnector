@@ -1,24 +1,25 @@
 {
-    "name": "axenox/googleconnector",
-    "require": {
-        "exface/core": "^1.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "\\axenox\\GoogleConnector\\": ""
-        },
-        "exclude-from-classmap": [
-            "/Config/",
-            "/Translations/",
-            "/Model/"
-        ]
-    },
-    "extra": {
-        "app": {
-            "app_uid": "0x11eba99a86268014a99a847beb4a5184",
-            "app_alias": "axenox.GoogleConnector",
-            "model_md5": "ba89abd5c359f21b8e72b8d220d860e9",
-            "model_timestamp": "2021-01-19 10:42:34"
-        }
-    }
+	"name" : "axenox/googleconnector",
+	"require" : {
+		"exface/core" : "^1.0",
+		"league/oauth2-google": "^3.0"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"\\axenox\\GoogleConnector\\" : ""
+		},
+		"exclude-from-classmap" : [
+			"/Config/",
+			"/Translations/",
+			"/Model/"
+		]
+	},
+	"extra" : {
+		"app" : {
+			"app_uid" : "0x11eba99a86268014a99a847beb4a5184",
+			"app_alias" : "axenox.GoogleConnector",
+			"model_md5" : "ba89abd5c359f21b8e72b8d220d860e9",
+			"model_timestamp" : "2021-01-19 10:42:34"
+		}
+	}
 }
