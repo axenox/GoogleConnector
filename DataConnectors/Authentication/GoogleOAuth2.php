@@ -98,7 +98,7 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
                     // If we don't have an authorization code then get one
                     $authUrl = $provider->getAuthorizationUrl($authOptions);
                     $redirectUrl = $request->getHeader('Referer')[0];
-                    $facade->startOAuthSession(
+                    $this->getClientFacade()->startOAuthSession(
                         $this->getConnection(),
                         $redirectUrl,
                         [
@@ -144,10 +144,18 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
     
     public function createLoginWidget(iContainOtherWidgets $container) : iContainOtherWidgets
     {
-        $container->addWidget(WidgetFactory::createFromUxonInParent($container, new UxonObject([
-            'widget_type' => 'Html',
-            'html' => $this->buildHtmlButton()
-        ])));
+        $container
+            ->addWidget(WidgetFactory::createFromUxonInParent($container, new UxonObject([
+                'widget_type' => 'Html',
+                'hide_caption' => false,
+                'inline' => true,
+                'html' => $this->buildHtmlButton()
+            ])))
+            ->addWidget(WidgetFactory::createFromUxonInParent($container, new UxonObject([
+                'attribute_alias' => 'AUTH_TOKEN_CLASS',
+                'value' => '\\' . OAuth2RequestToken::class,
+                'widget_type' => 'InputHidden'
+            ])));
         return $container;
     }
     
