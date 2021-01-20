@@ -152,6 +152,24 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
         return $container;
     }
     
+    /**
+     *
+     * {@inheritDoc}
+     * @see \exface\UrlDataConnector\Interfaces\HttpAuthenticationProviderInterface::getDefaultRequestOptions()
+     */
+    public function getDefaultRequestOptions(array $defaultOptions): array
+    {
+        if (! $token = $this->getTokenStored()) {
+            return $defaultOptions;
+        }
+        
+        $headers = $defaultOptions['headers'] ?? [];
+        $headers['Authorization'][0] = 'BEARER ' . $token->getToken();
+        $defaultOptions['headers'] = $headers;
+        
+        return $defaultOptions;
+    }
+    
     protected function getOAuthSessionId() : string
     {
         return $this->getConnection()->getAliasWithNamespace();
@@ -301,16 +319,6 @@ HTML;
     {
         return $this->connection->getWorkbench();
     }
-    
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \exface\UrlDataConnector\Interfaces\HttpAuthenticationProviderInterface::getDefaultRequestOptions()
-     */
-    public function getDefaultRequestOptions(array $defaultOptions): array
-    {
-        return $defaultOptions;
-    }
 
     /**
      * 
@@ -322,15 +330,16 @@ HTML;
         if (! $authenticatedToken instanceof OAuth2AccessToken) {
             throw new InvalidArgumentException('Cannot store authentication token ' . get_class($authenticatedToken) . ' in OAuth2 credentials: only OAuth2AccessToken or derivatives supported!');
         }
+        
+        $accessToken = $authenticatedToken->getAccessToken();
         $uxon = new UxonObject([
             'authentication' => [
                 'class' => '\\' . get_class($this),
-                'token' => $authenticatedToken->getAccessToken()->jsonSerialize()
+                'token' => $accessToken->jsonSerialize(),
+                'refresh_token' => $accessToken->getRefreshToken() ? $accessToken->getRefreshToken() : $this->getRefreshToken()
             ]
         ]);
-        if ($refreshToken = $authenticatedToken->getAccessToken()->getRefreshToken()) {
-            $uxon->getProperty('authentication')->setProperty('refresh_token', $refreshToken);
-        }
+        
         return $uxon;
     }
     
