@@ -137,7 +137,7 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
         }
         
         if ($oauthToken) {
-            return new OAuth2AccessToken($this->getUsername($oauthToken), $oauthToken, $token->getFacade());
+            return new OAuth2AccessToken($this->getUsername($oauthToken, $provider), $oauthToken, $token->getFacade());
         }
         
         throw new AuthenticationFailedError($this->getConnection(), 'Please sign in first!');
