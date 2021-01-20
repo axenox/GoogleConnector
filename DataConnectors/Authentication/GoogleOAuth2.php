@@ -18,7 +18,7 @@ use exface\Core\Factories\WidgetFactory;
 use exface\Core\Exceptions\Security\AuthenticationFailedError;
 use axenox\OAuth2Connector\CommonLogic\Security\AuthenticationToken\OAuth2RequestToken;
 use League\OAuth2\Client\Provider\AbstractProvider;
-use exface\Core\Interfaces\Model\UiPageInterface;
+use axenox\OAuth2Connector\Exceptions\OAuthInvalidStateException;
 
 class GoogleOAuth2 implements HttpAuthenticationProviderInterface
 {
@@ -62,30 +62,22 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
         }
     }
     
-    public function isOAuthInitiator(OAuth2RequestToken $token, array $sessionVars) : bool
-    {
-        $params = $token->getRequest()->getQueryParams();
-        if (empty($params['state']) || $params['state'] !== $sessionVars['state']) {
-            return false;
-        }
-        return true;
-    }
-    
     public function authenticate(AuthenticationTokenInterface $token): AuthenticationTokenInterface
     {
         if (! $token instanceof OAuth2RequestToken) {
             throw new InvalidArgumentException('Cannot use token ' . get_class($token) . ' in OAuth2 authentication: only OAuth2RequestToken or derivatives allowed!');
         }
         
+        $facade = $token->getFacade();
         $request = $token->getRequest();
-        $params = $request->getQueryParams();
+        $requestParams = $request->getQueryParams();
         $provider = $this->getOAuthProvider();
         
         switch (true) {
             
             // If we are not processing a provider response, either use the stored token
             // or redirect ot the provider to start authentication
-            case empty($params['code']):
+            case empty($requestParams['code']):
             
                 $authOptions = [];
                 $oauthToken = $this->getTokenStored();
@@ -105,8 +97,7 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
                     // If we don't have an authorization code then get one
                     $authUrl = $provider->getAuthorizationUrl($authOptions);
                     $redirectUrl = $request->getHeader('Referer')[0];
-                    $this->getClientFacade()->addOAuthSession(
-                        $this->getOAuthSessionId(),
+                    $facade->startOAuthSession(
                         $this->getConnection(),
                         $redirectUrl,
                         [
@@ -118,24 +109,31 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
                 break;
             
             // Got an error, probably user denied access
-            case !empty($params['error']):
-                throw new AuthenticationFailedError($this, 'OAuth2 error: ' . htmlspecialchars($params['error'], ENT_QUOTES, 'UTF-8'));
+            case !empty($requestParams['error']):
+                $facade->stopOAuthSession();
+                throw new AuthenticationFailedError($this, 'OAuth2 error: ' . htmlspecialchars($requestParams['error'], ENT_QUOTES, 'UTF-8'));
                 
-            // Process provider response here
+            // If code is not empty and there is no error, process provider response here
             default:
+                $sessionVars = $facade->getOAuthSessionVars();
+                
+                if (empty($requestParams['state']) || $requestParams['state'] !== $sessionVars['state']) {
+                    $facade->stopOAuthSession();
+                    throw new OAuthInvalidStateException($this, 'Invalid OAuth2 state!');
+                }
             
                 // Get an access token (using the authorization code grant)
                 try {
                     $oauthToken = $provider->getAccessToken('authorization_code', [
-                        'code' => $params['code']
+                        'code' => $requestParams['code']
                     ]);
                 } catch (\Throwable $e) {
+                    $facade->stopOAuthSession();
                     throw new AuthenticationFailedError($this->getConnection(), $e->getMessage(), null, $e);
                 }
-                
-                
         }
         
+        $facade->stopOAuthSession();
         if ($oauthToken) {
             return new OAuth2AccessToken($this->getUsername($oauthToken, $provider), $oauthToken, $token->getFacade());
         }
@@ -168,11 +166,6 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
         $defaultOptions['headers'] = $headers;
         
         return $defaultOptions;
-    }
-    
-    protected function getOAuthSessionId() : string
-    {
-        return $this->getConnection()->getAliasWithNamespace();
     }
     
     protected function getOAuthProvider() : Google
