@@ -19,6 +19,7 @@ use exface\Core\Exceptions\Security\AuthenticationFailedError;
 use axenox\OAuth2Connector\CommonLogic\Security\AuthenticationToken\OAuth2RequestToken;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use axenox\OAuth2Connector\Exceptions\OAuthInvalidStateException;
+use Psr\Http\Message\RequestInterface;
 
 class GoogleOAuth2 implements HttpAuthenticationProviderInterface
 {
@@ -157,15 +158,21 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
      */
     public function getDefaultRequestOptions(array $defaultOptions): array
     {
-        if (! $token = $this->getTokenStored()) {
-            return $defaultOptions;
-        }
-        
-        $headers = $defaultOptions['headers'] ?? [];
-        $headers['Authorization'][0] = 'BEARER ' . $token->getToken();
-        $defaultOptions['headers'] = $headers;
-        
         return $defaultOptions;
+    }
+    
+    /**
+     *
+     * {@inheritDoc}
+     * @see \exface\UrlDataConnector\Interfaces\HttpAuthenticationProviderInterface::signRequest()
+     */
+    public function signRequest(RequestInterface $request) : RequestInterface
+    {
+        $token = $this->getTokenStored();
+        if ($token) {
+            $request = $request->withHeader('Authorization', 'BEARER ' . $token->getToken());
+        }
+        return $request;
     }
     
     protected function getOAuthProvider() : Google
