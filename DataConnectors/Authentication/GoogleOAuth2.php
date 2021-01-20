@@ -360,7 +360,12 @@ HTML;
         return $this->refreshToken;
     }
     
-    protected function setRefreshToken(string $value) : GoogleOAuth2
+    /**
+     * 
+     * @param string|null $value
+     * @return GoogleOAuth2
+     */
+    protected function setRefreshToken($value) : GoogleOAuth2
     {
         $this->refreshToken = $value;
         return $this;
