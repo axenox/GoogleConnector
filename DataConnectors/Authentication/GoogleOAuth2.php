@@ -18,6 +18,7 @@ use exface\Core\Factories\WidgetFactory;
 use exface\Core\Exceptions\Security\AuthenticationFailedError;
 use axenox\OAuth2Connector\CommonLogic\Security\AuthenticationToken\OAuth2RequestToken;
 use League\OAuth2\Client\Provider\AbstractProvider;
+use exface\Core\Interfaces\Model\UiPageInterface;
 
 class GoogleOAuth2 implements HttpAuthenticationProviderInterface
 {
@@ -61,6 +62,15 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
         }
     }
     
+    public function isOAuthInitiator(OAuth2RequestToken $token, array $sessionVars) : bool
+    {
+        $params = $token->getRequest()->getQueryParams();
+        if (empty($params['state']) || $params['state'] !== $sessionVars['state']) {
+            return false;
+        }
+        return true;
+    }
+    
     public function authenticate(AuthenticationTokenInterface $token): AuthenticationTokenInterface
     {
         if (! $token instanceof OAuth2RequestToken) {
@@ -94,7 +104,14 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
                 if (! $oauthToken || ! empty($authOptions)) {
                     // If we don't have an authorization code then get one
                     $authUrl = $provider->getAuthorizationUrl($authOptions);
-                    $this->setSessionVar('oauth2state', $provider->getState());
+                    $redirectUrl = $params['origin'];
+                    $this->getClientFacade()->addOAuthSession(
+                        $this->getOAuthSessionId(),
+                        $this->getConnection(),
+                        $redirectUrl,
+                        [
+                            'state' => $provider->getState()
+                        ]);
                     header('Location: ' . $authUrl);
                     exit;
                 }
@@ -104,11 +121,6 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
             case !empty($params['error']):
                 throw new AuthenticationFailedError($this, 'OAuth2 error: ' . htmlspecialchars($params['error'], ENT_QUOTES, 'UTF-8'));
                 
-            // State is invalid, possible CSRF attack in progress
-            case empty($params['state']) || ($params['state'] !== $this->getSessionVar('oauth2state')):
-                $this->unsetSessionVar('oauth2state');
-                throw new AuthenticationFailedError($this, 'Invalid OAuth2 state');
-            
             // Process provider response here
             default:
             
@@ -138,6 +150,11 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
             'html' => $this->buildHtmlButton()
         ])));
         return $container;
+    }
+    
+    protected function getOAuthSessionId() : string
+    {
+        return $this->getConnection()->getAliasWithNamespace();
     }
     
     protected function getOAuthProvider() : Google
@@ -186,9 +203,13 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
     
     protected function buildHtmlButton() : string
     {
+        $request = $this->getWorkbench()->getContext()->getScopeRequest()->getRequestProcessed();
+        $currentUrl = $request ? $request->getUri()->__toString() : $this->getWorkbench()->getUrl();
+        $currentUrl = urlencode($currentUrl);
+        
         return <<<HTML
         
-<a href="{$this->getRedirectUri()}/{$this->getConnection()->getAliasWithNamespace()}">
+<a href="{$this->getRedirectUri()}/{$this->getConnection()->getAliasWithNamespace()}?origin={$currentUrl}">
     <span style="float: left">
         <svg width="46px" height="46px" viewBox="0 0 46 46" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
            <defs>
@@ -344,22 +365,5 @@ HTML;
     {
         $ownerDetails = $oauthProvider->getResourceOwner($oauthToken);
         return $ownerDetails->getEmail();
-    }
-    
-    protected function setSessionVar(string $name, $value) : GoogleOAuth2
-    {
-        $this->getWorkbench()->getContext()->getScopeSession()->setVariable($name, $value, $this->getConnection()->getAliasWithNamespace());
-        return $this;
-    }
-    
-    protected function getSessionVar(string $name)
-    {
-        return $this->getWorkbench()->getContext()->getScopeSession()->getVariable($name, $this->getConnection()->getAliasWithNamespace());
-    }
-    
-    protected function unsetSessionVar(string $name) : GoogleOAuth2
-    {
-        $this->getWorkbench()->getContext()->getScopeSession()->unsetVariable($name, $this->getConnection()->getAliasWithNamespace());
-        return $this;
     }
 }
