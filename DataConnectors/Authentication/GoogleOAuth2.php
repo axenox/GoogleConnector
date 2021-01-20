@@ -104,7 +104,7 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
                 if (! $oauthToken || ! empty($authOptions)) {
                     // If we don't have an authorization code then get one
                     $authUrl = $provider->getAuthorizationUrl($authOptions);
-                    $redirectUrl = $params['origin'];
+                    $redirectUrl = $request->getHeader('Referer')[0];
                     $this->getClientFacade()->addOAuthSession(
                         $this->getOAuthSessionId(),
                         $this->getConnection(),
@@ -220,14 +220,10 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
     }
     
     protected function buildHtmlButton() : string
-    {
-        $request = $this->getWorkbench()->getContext()->getScopeRequest()->getRequestProcessed();
-        $currentUrl = $request ? $request->getUri()->__toString() : $this->getWorkbench()->getUrl();
-        $currentUrl = urlencode($currentUrl);
-        
+    {        
         return <<<HTML
         
-<a href="{$this->getRedirectUri()}/{$this->getConnection()->getAliasWithNamespace()}?origin={$currentUrl}">
+<a href="{$this->getRedirectUri()}/{$this->getConnection()->getAliasWithNamespace()}" referrerpolicy="unsafe-url">
     <span style="float: left">
         <svg width="46px" height="46px" viewBox="0 0 46 46" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
            <defs>
