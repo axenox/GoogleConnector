@@ -170,7 +170,7 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
     {
         $token = $this->getTokenStored();
         if ($token) {
-            $request = $request->withHeader('Authorization', 'BEARER ' . $token->getToken());
+            $request = $request->withHeader('Authorization', 'Bearer ' . $token->getToken());
         }
         return $request;
     }
