@@ -78,7 +78,7 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
                     // If we don't have an authorization code then get one
                     $authUrl = $provider->getAuthorizationUrl($authOptions);
                     $redirectUrl = $request->getHeader('Referer')[0];
-                    $this->getClientFacade()->startOAuthSession(
+                    $this->getOAuthClientFacade()->startOAuthSession(
                         $this->getConnection(),
                         $redirectUrl,
                         [
@@ -218,5 +218,15 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
     {
         $this->refreshToken = $value;
         return $this;
+    }
+    
+    protected function getAuthProvider() : AuthenticationProviderInterface
+    {
+        return $this->getConnection();
+    }
+    
+    protected function getOAuthClientFacadeRequestUri() : string
+    {
+        return $this->getRedirectUri() . '/' .$this->getConnection()->getAliasWithNamespace();
     }
 }
