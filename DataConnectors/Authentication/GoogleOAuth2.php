@@ -84,6 +84,7 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
                         [
                             'state' => $provider->getState()
                         ]);
+                    $this->getWorkbench()->stop();
                     header('Location: ' . $authUrl);
                     exit;
                 }
@@ -227,6 +228,6 @@ class GoogleOAuth2 implements HttpAuthenticationProviderInterface
     
     protected function getOAuthClientFacadeRequestUri() : string
     {
-        return $this->getRedirectUri() . '/' .$this->getConnection()->getAliasWithNamespace();
+        return $this->getOAuthClientFacade()->buildUrlToFacade(true) . '/' .$this->getConnection()->getAliasWithNamespace();
     }
 }
