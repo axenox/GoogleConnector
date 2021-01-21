@@ -80,11 +80,11 @@
     ],
     "rows": [
         {
-            "CREATED_ON": "2021-01-19 09:40:45",
-            "MODIFIED_ON": "2021-01-19 10:00:27",
+            "CREATED_ON": "2021-01-21 18:12:55",
+            "MODIFIED_ON": "2021-01-21 18:12:55",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
-            "UID": "0x11ebad0505941fc8ad05847beb4a5184",
+            "UID": "0x11eb87dce6fbb49687dc025041000001",
             "READABLE_FLAG": "1",
             "WRITABLE_FLAG": "0",
             "COMMENTS": "",
@@ -94,7 +94,7 @@
             "DATA_SOURCE": "0x11eb9520e32ff1789520847beb4a5184",
             "APP": "0x11eba99a86268014a99a847beb4a5184",
             "SHORT_DESCRIPTION": "",
-            "PARENT_OBJECT": "",
+            "PARENT_OBJECT": "0x11ebad0505941fc8ad05847beb4a5184",
             "DATA_ADDRESS_PROPS": null,
             "DEFAULT_EDITOR_UXON": null,
             "ALIAS": "userinfo",
