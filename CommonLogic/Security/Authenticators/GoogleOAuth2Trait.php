@@ -9,7 +9,7 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Google;
 use exface\Core\Factories\WidgetFactory;
 use axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait;
-use axenox\OAuth2Connector\CommonLogic\Security\AuthenticationToken\OAuth2AccessToken;
+use axenox\OAuth2Connector\CommonLogic\Security\AuthenticationToken\OAuth2AuthenticatedToken;
 use axenox\OAuth2Connector\CommonLogic\Security\AuthenticationToken\OAuth2RequestToken;
 use axenox\OAuth2Connector\Exceptions\OAuthInvalidStateException;
 use exface\Core\Exceptions\Security\AuthenticationFailedError;
@@ -24,9 +24,9 @@ trait GoogleOAuth2Trait
     
     private $accessType = 'offline';
     
-    protected function exchangeOAuthToken(AuthenticationTokenInterface $token): OAuth2AccessToken
+    protected function exchangeOAuthToken(AuthenticationTokenInterface $token): OAuth2AuthenticatedToken
     {
-        if ($token instanceof OAuth2AccessToken) {
+        if ($token instanceof OAuth2AuthenticatedToken) {
             if ($token->getAccessToken()->hasExpired()) {
                 throw new AuthenticationFailedError($this->getAuthProvider(), 'OAuth token expired: Please sign in again!');
             } else {
@@ -54,11 +54,11 @@ trait GoogleOAuth2Trait
                 if ($oauthToken) {
                     $expired = $oauthToken->hasExpired();
                     if ($expired) {
-                        if (! $this->getRefreshToken()) {
+                        if (! $this->getRefreshToken($oauthToken)) {
                             $authOptions = ['prompt' => 'consent'];
                         } else {
                             $oauthToken = $provider->getAccessToken('refresh_token', [
-                                'refresh_token' => $this->getRefreshToken()
+                                'refresh_token' => $this->getRefreshToken($oauthToken)
                             ]);
                         }
                     }
@@ -106,7 +106,7 @@ trait GoogleOAuth2Trait
         
         $clientFacade->stopOAuthSession();
         if ($oauthToken) {
-            return new OAuth2AccessToken($this->getUsername($oauthToken, $provider), $oauthToken, $token->getFacade());
+            return new OAuth2AuthenticatedToken($this->getUsername($oauthToken, $provider), $oauthToken, $token->getFacade());
         }
         
         throw new AuthenticationFailedError($this->getConnection(), 'Please sign in first!');
@@ -203,7 +203,7 @@ HTML
     
     /**
      * 
-     * @see axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::setUrlAuthorize()
+     * @see \axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::setUrlAuthorize()
      */
     protected function setUrlAuthorize(string $value) : AuthenticationProviderInterface
     {
@@ -212,7 +212,7 @@ HTML
     
     /**
      *
-     * @see axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::getUrlAuthorize()
+     * @see \axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::getUrlAuthorize()
      */
     protected function getUrlAuthorize() : string
     {
@@ -221,7 +221,7 @@ HTML
     
     /**
      * 
-     * @see axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::setUrlAccessToken()
+     * @see \axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::setUrlAccessToken()
      */
     protected function setUrlAccessToken(string $value) : AuthenticationProviderInterface
     {
@@ -230,7 +230,7 @@ HTML
     
     /**
      *
-     * @see axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::getUrlAccessToken()
+     * @see \axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::getUrlAccessToken()
      */
     protected function getUrlAccessToken() : string
     {
@@ -238,7 +238,7 @@ HTML
     }
     
     /**
-     * @see axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::setUrlResourceOwnerDetails()
+     * @see \axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::setUrlResourceOwnerDetails()
      */
     protected function setUrlResourceOwnerDetails(string $value) : AuthenticationProviderInterface
     {
@@ -246,7 +246,7 @@ HTML
     }
     
     /**
-     * @see axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::getUrlResourceOwnerDetails()
+     * @see \axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait::getUrlResourceOwnerDetails()
      */
     protected function getUrlResourceOwnerDetails() : string
     {
