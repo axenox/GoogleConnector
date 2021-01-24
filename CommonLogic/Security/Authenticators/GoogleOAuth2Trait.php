@@ -69,6 +69,7 @@ trait GoogleOAuth2Trait
                     $redirectUrl = $request->getHeader('Referer')[0];
                     $clientFacade->startOAuthSession(
                         $this->getAuthProvider(),
+                        $this->getOAuthProviderHash(),
                         $redirectUrl,
                         [
                             'state' => $provider->getState()
@@ -151,7 +152,7 @@ trait GoogleOAuth2Trait
             'inline' => true,
             'html' => <<<HTML
             
-<a href="{$this->getOAuthClientFacade()->buildUrlForProvider($this)}" referrerpolicy="unsafe-url">
+<a href="{$this->getOAuthClientFacade()->buildUrlForProvider($this, $this->getOAuthProviderHash())}" referrerpolicy="unsafe-url">
     <span style="float: left">
         <svg width="46px" height="46px" viewBox="0 0 46 46" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
            <defs>
