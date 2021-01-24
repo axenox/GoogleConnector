@@ -120,6 +120,10 @@ trait GoogleOAuth2Trait
             'redirectUri'   => $this->getRedirectUri(),
             'accessType'    => $this->getAccessType()
         ];
+        
+        if (! empty($this->getScopes())) {
+            $options['scopes'] = $this->getScopes();
+        }
         return new Google($options);
     }
     
