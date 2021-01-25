@@ -71,6 +71,30 @@
             "READONLY": "1",
             "ALIAS": "GOOGLE_OPENID_V1",
             "FILTER_CONTEXT": null
+        },
+        {
+            "CREATED_ON": "2021-01-24 19:42:48",
+            "MODIFIED_ON": "2021-01-24 19:43:44",
+            "CREATED_BY_USER": "0x31000000000000000000000000000000",
+            "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
+            "UID": "0x11eb998ef54f9160998e025041000001",
+            "APP": "0x11eba99a86268014a99a847beb4a5184",
+            "LABEL": "Google Calendar v.3",
+            "CONNECTOR": "exface\/UrlDataConnector\/DataConnectors\/HttpConnector.php",
+            "CONFIG": {
+                "url": "https:\/\/www.googleapis.com\/calendar\/v3\/",
+                "authentication": {
+                    "class": "\\axenox\\GoogleConnector\\DataConnectors\\Authentication\\GoogleOAuth2",
+                    "client_id": "914683922990-m5mani2914rcodslb7spoob1b8k4ktko.apps.googleusercontent.com",
+                    "client_secret": "-piYBNdIBYQnQIcAN_CniNml",
+                    "scopes": [
+                        "https:\/\/www.googleapis.com\/auth\/calendar"
+                    ]
+                }
+            },
+            "READONLY": "0",
+            "ALIAS": "GOOGLE_CALENDAR_V3",
+            "FILTER_CONTEXT": null
         }
     ],
     "totals_rows": [],

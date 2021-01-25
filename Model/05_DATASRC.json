@@ -69,6 +69,21 @@
             "BASE_OBJECT": "",
             "LABEL": "Google OpenID",
             "ALIAS": "GOOGLE_OPENID"
+        },
+        {
+            "CREATED_ON": "2021-01-24 19:43:25",
+            "MODIFIED_ON": "2021-01-24 19:43:53",
+            "CREATED_BY_USER": "0x31000000000000000000000000000000",
+            "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
+            "UID": "0x11eb87500ace05bc8750025041000001",
+            "APP": "0x11eba99a86268014a99a847beb4a5184",
+            "DEFAULT_CONNECTION": "0x11eb998ef54f9160998e025041000001",
+            "DEFAULT_QUERY_BUILDER": "exface\/UrlDataConnector\/QueryBuilders\/JsonUrlBuilder.php",
+            "READABLE_FLAG": "1",
+            "WRITABLE_FLAG": "1",
+            "BASE_OBJECT": "",
+            "LABEL": "Google Calendar API",
+            "ALIAS": "GOOGLE_CALENDAR_API"
         }
     ],
     "totals_rows": [],
