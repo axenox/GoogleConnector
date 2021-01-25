@@ -15,6 +15,7 @@ use axenox\OAuth2Connector\Exceptions\OAuthInvalidStateException;
 use exface\Core\Exceptions\Security\AuthenticationFailedError;
 use exface\Core\Exceptions\RuntimeException;
 use exface\Core\Interfaces\Security\AuthenticationTokenInterface;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 
 trait GoogleOAuth2Trait
 {
@@ -107,7 +108,7 @@ trait GoogleOAuth2Trait
         
         $clientFacade->stopOAuthSession();
         if ($oauthToken) {
-            return new OAuth2AuthenticatedToken($this->getUsername($oauthToken, $provider), $oauthToken, $token->getFacade());
+            return new OAuth2AuthenticatedToken($this->getUsername($oauthToken), $oauthToken, $token->getFacade());
         }
         
         throw new AuthenticationFailedError($this->getConnection(), 'Please sign in first!');
@@ -126,6 +127,16 @@ trait GoogleOAuth2Trait
             $options['scopes'] = $this->getScopes();
         }
         return new Google($options);
+    }
+    
+    protected function getUsername(AccessTokenInterface $oauthToken) : ?string
+    {
+        /* @var $ownerDetails \League\OAuth2\Client\Provider\GoogleUser */
+        $ownerDetails = $this->getOAuthProvider()->getResourceOwner($oauthToken);
+        if (($field = $this->getUsernameResourceOwnerField()) !== null) {
+            return $ownerDetails->toArray()[$field];
+        }
+        return $ownerDetails->getEmail();
     }
     
     public function getAccessType() : string
@@ -198,7 +209,7 @@ trait GoogleOAuth2Trait
         </svg>
     </span>
     <span style="line-height: 40px; display: inline-block; margin: 3px 3px 3px -4px; background-color: #4285F4; padding: 0 8px 0 8px; color: white; font-weight: bold;">
-        Sign in with Google
+        {$this->getWorkbench()->getApp('axenox.OAuth2Connector')->getTranslator()->translate('SIGN_IN_WITH')} Google
     </span>
 </a>
 
