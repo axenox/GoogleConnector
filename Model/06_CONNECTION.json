@@ -74,7 +74,7 @@
         },
         {
             "CREATED_ON": "2021-01-24 19:42:48",
-            "MODIFIED_ON": "2021-01-24 19:43:44",
+            "MODIFIED_ON": "2021-01-25 14:13:55",
             "CREATED_BY_USER": "0x31000000000000000000000000000000",
             "MODIFIED_BY_USER": "0x31000000000000000000000000000000",
             "UID": "0x11eb998ef54f9160998e025041000001",
@@ -85,8 +85,8 @@
                 "url": "https:\/\/www.googleapis.com\/calendar\/v3\/",
                 "authentication": {
                     "class": "\\axenox\\GoogleConnector\\DataConnectors\\Authentication\\GoogleOAuth2",
-                    "client_id": "914683922990-m5mani2914rcodslb7spoob1b8k4ktko.apps.googleusercontent.com",
-                    "client_secret": "-piYBNdIBYQnQIcAN_CniNml",
+                    "client_id": "",
+                    "client_secret": "",
                     "scopes": [
                         "https:\/\/www.googleapis.com\/auth\/calendar"
                     ]
