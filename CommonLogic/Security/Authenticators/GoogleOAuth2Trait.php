@@ -208,7 +208,7 @@ trait GoogleOAuth2Trait
             </g>
         </svg>
     </span>
-    <span style="line-height: 40px; display: inline-block; margin: 3px 3px 3px -4px; background-color: #4285F4; padding: 0 8px 0 8px; color: white; font-weight: bold;">
+    <span style="line-height: 40px; display: inline-block; margin: 3px 3px 3px -4px; background-color: #4285F4; padding: 0 8px 0 8px; color: white; font-weight: bold; white-space: nowrap;">
         {$this->getWorkbench()->getApp('axenox.OAuth2Connector')->getTranslator()->translate('SIGN_IN_WITH')} Google
     </span>
 </a>
