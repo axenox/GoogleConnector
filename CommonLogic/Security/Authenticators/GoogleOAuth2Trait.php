@@ -139,17 +139,6 @@ trait GoogleOAuth2Trait
         return $ownerDetails->getEmail();
     }
     
-    public function getAccessType() : string
-    {
-        return $this->accessType;
-    }
-    
-    public function setAccessType(string $value) : AuthenticationProviderInterface
-    {
-        $this->accessType = $value;
-        return $this;
-    }
-    
     /**
      *
      * @param iContainOtherWidgets $container
@@ -267,5 +256,26 @@ HTML
     protected function getUrlResourceOwnerDetails() : string
     {
         return $this->getOAuthProvider()->getResourceOwnerDetailsUrl();
+    }
+    
+    protected function getAccessType() : string
+    {
+        return $this->accessType;
+    }
+    
+    /**
+     * Access type
+     * 
+     * @uxon-property access_type
+     * @uxon-type string
+     * @uxon-default offline
+     * 
+     * @param string $value
+     * @return AuthenticationProviderInterface
+     */
+    protected function setAccessType(string $value) : AuthenticationProviderInterface
+    {
+        $this->accessType = $value;
+        return $this;
     }
 }
