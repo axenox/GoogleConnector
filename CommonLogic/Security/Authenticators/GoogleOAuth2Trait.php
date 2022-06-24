@@ -11,11 +11,11 @@ use exface\Core\Factories\WidgetFactory;
 use axenox\OAuth2Connector\CommonLogic\Security\Authenticators\OAuth2Trait;
 use axenox\OAuth2Connector\CommonLogic\Security\AuthenticationToken\OAuth2AuthenticatedToken;
 use axenox\OAuth2Connector\CommonLogic\Security\AuthenticationToken\OAuth2RequestToken;
-use axenox\OAuth2Connector\Exceptions\OAuthInvalidStateException;
+use axenox\OAuth2Connector\Exceptions\OAuthHttpException;
 use exface\Core\Exceptions\Security\AuthenticationFailedError;
-use exface\Core\Exceptions\RuntimeException;
 use exface\Core\Interfaces\Security\AuthenticationTokenInterface;
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use exface\Core\Exceptions\Security\AuthenticatorConfigError;
 
 trait GoogleOAuth2Trait
 {
@@ -36,7 +36,7 @@ trait GoogleOAuth2Trait
         }
         
         if (! $token instanceof OAuth2RequestToken) {
-            throw new RuntimeException('Cannot use "' . get_class($token) . '" as OAuth token!');
+            throw new AuthenticationRuntimeError($this, 'Cannot use "' . get_class($token) . '" as OAuth token!');
         }
         
         $clientFacade = $this->getOAuthClientFacade();
@@ -92,7 +92,7 @@ trait GoogleOAuth2Trait
                 
                 if (empty($requestParams['state']) || $requestParams['state'] !== $sessionVars['state']) {
                     $clientFacade->stopOAuthSession();
-                    throw new OAuthInvalidStateException($this, 'Invalid OAuth2 state!');
+                    throw new OAuthHttpException($this, 'Invalid OAuth2 state: expecting "' . $sessionVars['state'] . '", received from provider "' . $requestParams['state'] . '"!', null, null, $request);
                 }
                 
                 // Get an access token (using the authorization code grant)
@@ -216,7 +216,7 @@ HTML
      */
     protected function setUrlAuthorize(string $value) : AuthenticationProviderInterface
     {
-        throw new RuntimeException('Cannot change the URLs for Google OAuth connectors!');
+        throw new AuthenticatorConfigError($this, 'Cannot change the URLs for Google OAuth connectors!');
     }
     
     /**
@@ -234,7 +234,7 @@ HTML
      */
     protected function setUrlAccessToken(string $value) : AuthenticationProviderInterface
     {
-        throw new RuntimeException('Cannot change the URLs for Google OAuth connectors!');
+        throw new AuthenticatorConfigError($this, 'Cannot change the URLs for Google OAuth connectors!');
     }
     
     /**
@@ -251,7 +251,7 @@ HTML
      */
     protected function setUrlResourceOwnerDetails(string $value) : AuthenticationProviderInterface
     {
-        throw new RuntimeException('Cannot change the URLs for Google OAuth connectors!');
+        throw new AuthenticatorConfigError($this, 'Cannot change the URLs for Google OAuth connectors!');
     }
     
     /**
