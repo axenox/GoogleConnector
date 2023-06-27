@@ -6,10 +6,10 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
 
 /**
  * Authenticates users via Google Single-Sign-On (OAuth 2.0).
- *
+ * 
  * To enable Single-Sign-On with Google, you will need to register the workbench at
  * Google APIs: https://console.developers.google.com/apis/credentials.
- *
+ * 
  * After the app registration is complete, proceed to "Credentials" inside the app settings
  * on Google and create an OAuth 2.0 client id of type "web application". When asket for
  * URLs use
@@ -21,9 +21,9 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
  * 
  * Now Google will generate the `client_id` and the `client_secret` needed to configure the 
  * authenticator.
- *
+ * 
  * ## Example Configuration
- *
+ * 
  * ```
  *  {
  *      "class": "\\axenox\\GoogleConnector\\CommonLogic\\Security\\Authenticators\\GoogleOAuth2Autenticator",
@@ -36,7 +36,7 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
  *          "exface.Core.SUPERUSER"
  *      ]
  *  }
- *
+ * 
  * ```
  *
  * @author Andrej Kabachnik
