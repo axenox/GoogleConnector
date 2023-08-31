@@ -84,7 +84,15 @@ trait GoogleOAuth2Trait
                 // Got an error, probably user denied access
             case !empty($requestParams['error']):
                 $clientFacade->stopOAuthSession();
-                throw new AuthenticationFailedError($this, 'OAuth2 error: ' . htmlspecialchars($requestParams['error'], ENT_QUOTES, 'UTF-8'));
+                // Wrap the OAuth exception in an ordinary AuthenticationFailedError to ensure they are
+                // handled similarly to other types of password-mismatch errors. In particular, they
+                // will produce propper 401 HTTP error codes.
+                throw new AuthenticationFailedError(
+                    $this,
+                    'Failed to sign in with Microsoft account',
+                    null,
+                    new OAuthHttpException($this, 'OAuth2 error: ' . htmlspecialchars($requestParams['error'], ENT_QUOTES, 'UTF-8'), null, null, $request)
+                );
                 
                 // If code is not empty and there is no error, process provider response here
             default:
